@@ -101,7 +101,7 @@
             </objects>
             <point key="canvasLocation" x="53.600000000000001" y="26.53673163418291"/>
         </scene>
-        <!--News Content View Controller-->
+        <!--Title-->
         <scene sceneID="r6w-yV-Efm">
             <objects>
                 <viewController storyboardIdentifier="NewsContentViewController" id="xQq-bA-TAQ" customClass="NewsContentViewController" customModule="DailyZhihu" customModuleProvider="target" sceneMemberID="viewController">
@@ -110,7 +110,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="iK1-fm-mKJ">
-                                <rect key="frame" x="0.0" y="-150" width="375" height="817"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TitleCell" rowHeight="220" id="wUz-R7-wlQ">
@@ -159,13 +159,15 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstAttribute="bottom" secondItem="iK1-fm-mKJ" secondAttribute="bottom" id="4eV-18-4e0"/>
-                            <constraint firstItem="iK1-fm-mKJ" firstAttribute="top" secondItem="S8I-3E-bNx" secondAttribute="top" constant="-150" id="bja-B2-mdj"/>
-                            <constraint firstAttribute="trailing" secondItem="iK1-fm-mKJ" secondAttribute="trailing" id="kiG-7c-kWe"/>
-                            <constraint firstItem="iK1-fm-mKJ" firstAttribute="leading" secondItem="S8I-3E-bNx" secondAttribute="leading" id="xww-Hy-XDr"/>
+                            <constraint firstItem="iK1-fm-mKJ" firstAttribute="leading" secondItem="zT6-RH-Bei" secondAttribute="leading" id="VQK-D1-kxe"/>
+                            <constraint firstItem="iK1-fm-mKJ" firstAttribute="trailing" secondItem="zT6-RH-Bei" secondAttribute="trailing" id="e85-9i-NMk"/>
+                            <constraint firstItem="iK1-fm-mKJ" firstAttribute="top" secondItem="S8I-3E-bNx" secondAttribute="top" id="omc-zL-PWT"/>
+                            <constraint firstItem="iK1-fm-mKJ" firstAttribute="bottom" secondItem="zT6-RH-Bei" secondAttribute="bottom" id="rzS-2q-yz9"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="zT6-RH-Bei"/>
                     </view>
+                    <navigationItem key="navigationItem" title="Title" id="lbT-zF-5i8"/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
                         <outlet property="tableView" destination="iK1-fm-mKJ" id="ySu-bp-Oea"/>
                     </connections>

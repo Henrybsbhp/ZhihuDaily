@@ -32,11 +32,6 @@ class TopicViewController: UIViewController, UITableViewDelegate, UITableViewDat
     func firstSettings() {
         self.navigationItem.title = "今日精选"
         
-        if #available(iOS 11.0, *) {
-            self.navigationController?.navigationBar.prefersLargeTitles = true
-            self.navigationItem.largeTitleDisplayMode = .always
-        }
-        
         if #available(iOS 10.0, *) {
             tableView.refreshControl = refreshControl
         } else {
@@ -48,6 +43,15 @@ class TopicViewController: UIViewController, UITableViewDelegate, UITableViewDat
         // Automatic row height settings
         tableView.estimatedRowHeight = 425
         tableView.rowHeight = UITableView.automaticDimension
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if #available(iOS 11.0, *) {
+            self.navigationController?.navigationBar.prefersLargeTitles = true
+            self.navigationItem.largeTitleDisplayMode = .automatic
+        }
     }
     
     // Pull to refresh event.

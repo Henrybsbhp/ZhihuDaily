@@ -21,12 +21,21 @@ class NewsContentViewController: UIViewController, UITableViewDelegate, UITableV
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationController?.setNavigationBarHidden(true, animated: false)
-        self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
+//        self.navigationController?.setNavigationBarHidden(true, animated: false)
+//        self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
         tableView.estimatedRowHeight = 350
         tableView.rowHeight = UITableView.automaticDimension
         
         fetchNewsList()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super .viewWillAppear(animated)
+        
+        if #available(11.0, *) {
+            self.navigationController?.navigationBar.prefersLargeTitles = false
+            self.navigationItem.largeTitleDisplayMode = .never
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
