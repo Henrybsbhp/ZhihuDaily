@@ -13,16 +13,51 @@ import Kingfisher
 class TopicViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @IBOutlet var tableView: UITableView!
+    
+    private let refreshControl = UIRefreshControl()
+    
     var dataSource = [TopicTableModel]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        firstSettings()
+        
+        // Get the latest topic.
+        fetchTopicList()
+        
+    }
+    
+    // Initial settings
+    func firstSettings() {
+        self.navigationItem.title = "今日精选"
+        
+        if #available(iOS 11.0, *) {
+            self.navigationController?.navigationBar.prefersLargeTitles = true
+            self.navigationItem.largeTitleDisplayMode = .always
+        }
+        
+        if #available(iOS 10.0, *) {
+            tableView.refreshControl = refreshControl
+        } else {
+            tableView.addSubview(refreshControl)
+        }
+        
+        refreshControl.addTarget(self, action: #selector(refreshTopicList(_:)), for: .valueChanged)
+        
+        // Automatic row height settings
         tableView.estimatedRowHeight = 425
         tableView.rowHeight = UITableView.automaticDimension
-        
+    }
+    
+    // Pull to refresh event.
+    @objc func refreshTopicList(_ sender: Any) {
+        fetchTopicList()
+    }
+    
+    func fetchTopicList() {
         DispatchQueue.global().async {
-            Alamofire.request("https://news-at.zhihu.com/api/3/stories/latest", method: .get, parameters: nil, encoding: URLEncoding.default, headers: nil).responseJSON { (response) in
+            Alamofire.request("https://news-at.zhihu.com/api/4/stories/latest", method: .get, parameters: nil, encoding: URLEncoding.default, headers: nil).responseJSON { (response) in
                 if response.error == nil {
                     print("Request success.")
                     if let result = response.result.value {
@@ -38,12 +73,21 @@ class TopicViewController: UIViewController, UITableViewDelegate, UITableViewDat
                     print("Request failed.")
                 }
                 
+                self.refreshControl.endRefreshing()
                 self.tableView.reloadData()
             }
             DispatchQueue.main.async {
-                self.tableView.reloadData()
+                self.refreshControl.beginRefreshing()
             }
         }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let topicTableModel = self.dataSource[indexPath.row]
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let newsContentVC = storyboard.instantiateViewController(withIdentifier: "NewsContentViewController") as! NewsContentViewController
+        newsContentVC.newsID = topicTableModel.id
+        self.navigationController?.pushViewController(newsContentVC, animated: true)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
