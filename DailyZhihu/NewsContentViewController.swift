@@ -9,21 +9,24 @@
 import UIKit
 import Alamofire
 import Kingfisher
+import WebKit
 
-class NewsContentViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class NewsContentViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, WKNavigationDelegate {
     
     @IBOutlet var tableView: UITableView!
     
     var newsID = String()
     
-    var newsModel: NewsContentModel?
+    var newsModel: NewsContentModel!
+    
+    var webViewHeight: CGFloat = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
 //        self.navigationController?.setNavigationBarHidden(true, animated: false)
 //        self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
-        tableView.estimatedRowHeight = 350
+        tableView.estimatedRowHeight = 0
         tableView.rowHeight = UITableView.automaticDimension
         
         fetchNewsList()
@@ -32,7 +35,7 @@ class NewsContentViewController: UIViewController, UITableViewDelegate, UITableV
     override func viewWillAppear(_ animated: Bool) {
         super .viewWillAppear(animated)
         
-        if #available(11.0, *) {
+        if #available(iOS 11.0, *) {
             self.navigationController?.navigationBar.prefersLargeTitles = false
             self.navigationItem.largeTitleDisplayMode = .never
         }
@@ -66,16 +69,25 @@ class NewsContentViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 350
+    fileprivate func loadHTML(model: NewsContentModel) -> String? {
+        guard let css = model.css, let body = model.body else {
+            return nil
+        }
+        var html = "<html>"
+        html += "<head>"
+        css.forEach { html += "<link rel=\"stylesheet\" href=\($0)>" }
+        html += "<style>img{max-width:320px !important;}</style>"
+        html += "<body>"
+        html += body
+        html += "</body>"
+        html += "</head>"
+        html += "</html>"
+        return html
     }
+
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
+    // MARK: Settings of cells.
+    func newsTitleTableViewCell(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TitleCell", for: indexPath)
         let imageView = cell.contentView.viewWithTag(100) as! UIImageView
         let imageSourceLabel = cell.contentView.viewWithTag(101) as! UILabel
@@ -91,4 +103,63 @@ class NewsContentViewController: UIViewController, UITableViewDelegate, UITableV
         return cell
     }
     
+    func newsContentTableViewCell(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ContentCell", for: indexPath)
+        let webView = SJWebView()
+        cell.contentView.addSubview(webView)
+        webView.frame = CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: webViewHeight)
+        webView.scrollView.isScrollEnabled = false
+        webView.navigationDelegate = self as WKNavigationDelegate
+        
+        if let model = newsModel {
+            webView.loadHTMLString(self.loadHTML(model: model)!, baseURL: nil)
+        }
+        
+        return cell
+    }
+    
+    // MARK: UITableView delegate.
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        
+        if indexPath.row == 0 {
+            return 350
+        }
+        
+        return webViewHeight
+    }
+    
+    // MARK: UITableView dataSource.
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 2
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        if indexPath.row == 0 {
+            let newsTitleCell = newsTitleTableViewCell(tableView, cellForRowAt: indexPath)
+            
+            return newsTitleCell
+        }
+        
+        let newsContentCell = newsContentTableViewCell(tableView, cellForRowAt: indexPath)
+        
+        return newsContentCell
+    }
+    
+    // MARK: The WKWebView's navigationDelegate
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        
+        if webView.isLoading == false {
+            
+            webView.evaluateJavaScript("document.body.scrollHeight") { (result, error) in
+                if let height = result as? CGFloat {
+                    self.webViewHeight = height
+                    
+                    self.tableView.reloadData()
+                }
+            }
+            
+        }
+    }
 }

@@ -10,13 +10,15 @@ import UIKit
 import Alamofire
 import Kingfisher
 
-class TopicViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class TopicViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate {
     
     @IBOutlet var tableView: UITableView!
     
     private let refreshControl = UIRefreshControl()
     
     var dataSource = [TopicTableModel]()
+    
+    var currentOffset: CGFloat = 0.0
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,6 +56,12 @@ class TopicViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
+    }
+    
     // Pull to refresh event.
     @objc func refreshTopicList(_ sender: Any) {
         fetchTopicList()
@@ -85,7 +93,32 @@ class TopicViewController: UIViewController, UITableViewDelegate, UITableViewDat
             }
         }
     }
+
+    // MARK: UIScrollView Delegate
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.y > currentOffset && scrollView.contentOffset.y > 60 {
+            UIView.animate(withDuration: 2, animations: {
+                
+                self.navigationController?.setNavigationBarHidden(true, animated: true)
+                
+            }) { (isFinished) in
+                
+            }
+        } else {
+            UIView.animate(withDuration: 2, animations: {
+                self.navigationController?.setNavigationBarHidden(false, animated: true)
+            }) { (isFinished) in
+                
+            }
+        }
+    }
     
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        currentOffset = scrollView.contentOffset.y
+    }
+    
+    
+    // MARK: UITableView Delegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let topicTableModel = self.dataSource[indexPath.row]
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -94,6 +127,7 @@ class TopicViewController: UIViewController, UITableViewDelegate, UITableViewDat
         self.navigationController?.pushViewController(newsContentVC, animated: true)
     }
     
+    // MARK: UITableView DataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.dataSource.count
     }
