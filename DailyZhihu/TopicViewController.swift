@@ -32,6 +32,7 @@ class TopicViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     // Initial settings
     func firstSettings() {
+        
         self.navigationItem.title = "今日精选"
         
         if #available(iOS 10.0, *) {

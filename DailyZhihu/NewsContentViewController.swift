@@ -11,29 +11,47 @@ import Alamofire
 import Kingfisher
 import WebKit
 
-class NewsContentViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, WKNavigationDelegate {
-    
-    @IBOutlet var tableView: UITableView!
+class NewsContentViewController: UIViewController, UIScrollViewDelegate {
     
     var newsID = String()
     
     var newsModel: NewsContentModel!
     
-    var webViewHeight: CGFloat = 0
+    var webView: SJWebView!
+    
+    var safeView: UIView!
+    
+    var currentOffset: CGFloat = 0.0
+    
+    var offset: CGFloat = 0.0
+    
+    
+    deinit {
+        print("NewsContentViewController is deinited.")
+        webView.scrollView.delegate = nil
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
 //        self.navigationController?.setNavigationBarHidden(true, animated: false)
 //        self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
-        tableView.estimatedRowHeight = 0
-        tableView.rowHeight = UITableView.automaticDimension
+        
+        webView = SJWebView()
+        webView.frame = CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height + 0)
+        webView.scrollView.delegate = self
+        
+        view.addSubview(webView)
+        
+        setupSafeView()
         
         fetchNewsList()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super .viewWillAppear(animated)
+        navigationController?.navigationBar.isHidden = true
+        navigationController?.interactivePopGestureRecognizer?.delegate = nil
         
         if #available(iOS 11.0, *) {
             self.navigationController?.navigationBar.prefersLargeTitles = false
@@ -43,7 +61,32 @@ class NewsContentViewController: UIViewController, UITableViewDelegate, UITableV
     
     override func viewWillDisappear(_ animated: Bool) {
         super .viewWillDisappear(animated)
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        
+    }
+    
+    func setupSafeView() {
+        safeView = UIView()
+        
+        if UIDevice().userInterfaceIdiom == .phone {
+            switch UIScreen.main.nativeBounds.height {
+            case 2436:
+                print("iPhone X, Xs")
+                safeView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 44)
+            case 2688:
+                print("iPhone Xs Max")
+                safeView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 44)
+            case 1792:
+                print("iPhone Xr")
+                safeView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 44)
+            default:
+                print("unknown")
+                safeView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 20)
+            }
+        }
+        
+        safeView.backgroundColor = .white
+        
+        view.addSubview(safeView)
     }
     
     func fetchNewsList() {
@@ -54,6 +97,8 @@ class NewsContentViewController: UIViewController, UITableViewDelegate, UITableV
                     if let result = response.result.value {
                         let JSON = result as! NSDictionary
                         self.newsModel = NewsContentModel.parseResponsedObject(from: JSON)
+                        self.webView.contentModel = self.newsModel
+                        self.webView.load()
                     }
                     
                 } else {
@@ -61,105 +106,46 @@ class NewsContentViewController: UIViewController, UITableViewDelegate, UITableV
                     
                 }
                 
-                self.tableView.reloadData()
             }
             DispatchQueue.main.async {
-                self.tableView.reloadData()
+                self.webView.startLoading()
             }
         }
     }
     
-    fileprivate func loadHTML(model: NewsContentModel) -> String? {
-        guard let css = model.css, let body = model.body else {
-            return nil
+    // MARK: UIScrollView Delegate
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
+        let offset = scrollView.contentOffset.y
+        self.offset = offset
+        
+        if let scaleView = webView.topImageView {
+            if offset > -88 {
+//                scaleView.top = -offset
+            } else {
+                let newHeight = abs(offset + 88) + 288
+                
+                scaleView.frame = CGRect(x: 0, y: offset, width: UIScreen.main.bounds.width, height: newHeight)
+            }
         }
-        var html = "<html>"
-        html += "<head>"
-        css.forEach { html += "<link rel=\"stylesheet\" href=\($0)>" }
-        html += "<style>img{max-width:320px !important;}</style>"
-        html += "<body>"
-        html += body
-        html += "</body>"
-        html += "</head>"
-        html += "</html>"
-        return html
+        
+        if offset >= 200 {
+            safeView.isHidden = false
+            UIApplication.shared.setStatusBarStyle(.default, animated: true)
+        } else {
+            safeView.isHidden = true
+            UIApplication.shared.setStatusBarStyle(.lightContent, animated: true)
+        }
     }
+    
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        currentOffset = scrollView.contentOffset.y
+    }
+    
+}
 
-    
-    // MARK: Settings of cells.
-    func newsTitleTableViewCell(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "TitleCell", for: indexPath)
-        let imageView = cell.contentView.viewWithTag(100) as! UIImageView
-        let imageSourceLabel = cell.contentView.viewWithTag(101) as! UILabel
-        let titleLabel = cell.contentView.viewWithTag(102) as! UILabel
-        
-        if let model = newsModel {
-            let url = URL(string: model.imageURL)
-            imageView.kf.setImage(with: url)
-            titleLabel.text = model.title
-            imageSourceLabel.text = "图片：" + model.imageSource
-        }
-        
-        return cell
-    }
-    
-    func newsContentTableViewCell(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ContentCell", for: indexPath)
-        let webView = SJWebView()
-        cell.contentView.addSubview(webView)
-        webView.frame = CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: webViewHeight)
-        webView.scrollView.isScrollEnabled = false
-        webView.navigationDelegate = self as WKNavigationDelegate
-        
-        if let model = newsModel {
-            webView.loadHTMLString(self.loadHTML(model: model)!, baseURL: nil)
-        }
-        
-        return cell
-    }
-    
-    // MARK: UITableView delegate.
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        
-        if indexPath.row == 0 {
-            return 350
-        }
-        
-        return webViewHeight
-    }
-    
-    // MARK: UITableView dataSource.
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        if indexPath.row == 0 {
-            let newsTitleCell = newsTitleTableViewCell(tableView, cellForRowAt: indexPath)
-            
-            return newsTitleCell
-        }
-        
-        let newsContentCell = newsContentTableViewCell(tableView, cellForRowAt: indexPath)
-        
-        return newsContentCell
-    }
-    
-    // MARK: The WKWebView's navigationDelegate
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        
-        if webView.isLoading == false {
-            
-            webView.evaluateJavaScript("document.body.scrollHeight") { (result, error) in
-                if let height = result as? CGFloat {
-                    self.webViewHeight = height
-                    
-                    self.tableView.reloadData()
-                }
-            }
-            
-        }
+extension NewsContentViewController: UIGestureRecognizerDelegate {
+    func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
+        return false
     }
 }

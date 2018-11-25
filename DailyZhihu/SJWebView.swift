@@ -10,6 +10,20 @@ import UIKit
 import WebKit
 
 class SJWebView: WKWebView {
+    
+    let screenW: CGFloat = UIScreen.main.bounds.width
+    let screenH: CGFloat = UIScreen.main.bounds.height
+    
+    var contentModel = NewsContentModel()
+    
+    // MARK: - Views on webView
+    var topImageView: UIImageView!
+    var titleLabel: UILabel!
+    var maskImageView: UIImageView!
+    var imgSourceLabel: UILabel!
+    var indicatorView: UIActivityIndicatorView!
+    var loadingView: UIView!
+    
     init() {
         // 设置内容自适应
         let js = "var meta = document.createElement('meta'); meta.setAttribute('name', 'viewport'); meta.setAttribute('content', 'width=device-width'); document.getElementsByTagName('head')[0].appendChild(meta);"
@@ -19,9 +33,98 @@ class SJWebView: WKWebView {
         wkUControl.addUserScript(wkUserScript)
         config.userContentController = wkUControl
         super.init(frame: CGRect.zero, configuration: config)
+        self.navigationDelegate = self
+        
+        loadingView = UIView()
+        loadingView.backgroundColor = UIColor.white
+        loadingView.frame = CGRect.init(x: 0, y: 0, width: screenW, height: screenH)
+        indicatorView = UIActivityIndicatorView(style: .gray)
+        indicatorView.center = loadingView.center
+        loadingView.addSubview(indicatorView)
+        scrollView.addSubview(loadingView)
+    }
+    
+    func setupUI() {
+        topImageView = UIImageView()
+        topImageView.contentMode = .scaleAspectFill
+        topImageView.clipsToBounds = true
+        topImageView.frame = CGRect.init(x: 0, y: -100, width: screenW, height: 300)
+        maskImageView = UIImageView()
+        maskImageView.image = UIImage(named: "Image_Mask")
+        maskImageView.frame = CGRect(x: 0, y: 100, width: screenW, height: 100)
+        titleLabel = UILabel()
+        titleLabel.font = UIFont.boldSystemFont(ofSize: 21)
+        titleLabel.numberOfLines = 2
+        titleLabel.textColor = UIColor.white
+        titleLabel.frame = CGRect.init(x: 15, y: 120, width: screenW - 30, height: 56)
+        imgSourceLabel = UILabel()
+        imgSourceLabel.font = UIFont.systemFont(ofSize: 10)
+        imgSourceLabel.textAlignment = .right
+        imgSourceLabel.textColor = UIColor.white
+        imgSourceLabel.frame = CGRect.init(x: 15, y: 180, width: screenW - 30, height: 16)
+        
+        scrollView.addSubview(topImageView)
+        scrollView.addSubview(maskImageView)
+        scrollView.addSubview(titleLabel)
+        scrollView.addSubview(imgSourceLabel)
+    }
+    
+    func load() {
+        guard let css = contentModel.css, let body = contentModel.body else {
+            return
+        }
+        var html = "<html>"
+        html += "<head>"
+        css.forEach { html += "<link rel=\"stylesheet\" href=\($0)>" }
+        html += "<style>img{max-width:320px !important;}</style>"
+        html += "<body>"
+        html += body
+        html += "</body>"
+        html += "</head>"
+        html += "</html>"
+        setupUI()
+        topImageView.kf.setImage(with: URL(string: contentModel.imageURL))
+        titleLabel.text = contentModel.title
+        imgSourceLabel.text = "图片：\(contentModel.imageSource)"
+        self.loadHTMLString(html, baseURL: nil)
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        indicatorView.center = self.center
+    }
+}
+
+extension SJWebView {
+    
+    func startLoading() {
+        indicatorView.startAnimating()
+        loadingView.isHidden = false
+    }
+    
+    func endloading() {
+        indicatorView.stopAnimating()
+        loadingView.isHidden = true
+    }
+    
+}
+
+extension SJWebView: WKNavigationDelegate {
+    
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        startLoading()
+        decisionHandler(.allow)
+    }
+    
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        endloading()
+    }
+    
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        endloading()
     }
 }
