@@ -83,9 +83,9 @@ class SJWebView: WKWebView {
         html += "</head>"
         html += "</html>"
         setupUI()
-        topImageView.kf.setImage(with: URL(string: contentModel.imageURL))
+        topImageView.kf.setImage(with: URL(string: contentModel.imageURL!))
         titleLabel.text = contentModel.title
-        imgSourceLabel.text = "图片：\(contentModel.imageSource)"
+        imgSourceLabel.text = "图片：\(contentModel.imageSource!)"
         self.loadHTMLString(html, baseURL: nil)
     }
     

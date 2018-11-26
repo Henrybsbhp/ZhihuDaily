@@ -90,27 +90,19 @@ class NewsContentViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func fetchNewsList() {
-        DispatchQueue.global().async {
-            Alamofire.request("https://news-at.zhihu.com/api/4/news/" + self.newsID, method: .get, parameters: nil, encoding: URLEncoding.default, headers: nil).responseJSON { (response) in
-                if response.error == nil {
-                    print("Request success.")
-                    if let result = response.result.value {
-                        let JSON = result as! NSDictionary
-                        self.newsModel = NewsContentModel.parseResponsedObject(from: JSON)
-                        self.webView.contentModel = self.newsModel
-                        self.webView.load()
-                    }
-                    
-                } else {
-                    print("Request failed.")
-                    
-                }
-                
-            }
-            DispatchQueue.main.async {
-                self.webView.startLoading()
-            }
+        
+        NetworkManager.shared.request(NetworkManager.shared.baseURL + "4/news/" + self.newsID, success: { (JSON) in
+            self.newsModel = NewsContentModel.parseResponsedObject(from: JSON)
+            self.webView.contentModel = self.newsModel
+            self.webView.load()
+        }, failure: { (error) in
+            print("Request failed.")
+        })
+        
+        DispatchQueue.main.async {
+            self.webView.startLoading()
         }
+        
     }
     
     // MARK: UIScrollView Delegate
