@@ -50,7 +50,7 @@ class NewsContentViewController: UIViewController, UIScrollViewDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super .viewWillAppear(animated)
-        navigationController?.navigationBar.isHidden = true
+        self.navigationController?.setNavigationBarHidden(true, animated: true)
         navigationController?.interactivePopGestureRecognizer?.delegate = nil
         
         if #available(iOS 11.0, *) {
@@ -70,16 +70,16 @@ class NewsContentViewController: UIViewController, UIScrollViewDelegate {
         if UIDevice().userInterfaceIdiom == .phone {
             switch UIScreen.main.nativeBounds.height {
             case 2436:
-                print("iPhone X, Xs")
+                print("iPhone X, XS")
                 safeView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 44)
             case 2688:
-                print("iPhone Xs Max")
+                print("iPhone XS Max")
                 safeView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 44)
             case 1792:
-                print("iPhone Xr")
+                print("iPhone XR")
                 safeView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 44)
             default:
-                print("unknown")
+                print("iPhone with no notch")
                 safeView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 20)
             }
         }

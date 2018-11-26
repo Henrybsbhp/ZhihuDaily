@@ -10,7 +10,7 @@ import UIKit
 import Alamofire
 import Kingfisher
 
-class TopicViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate {
+class TopicViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @IBOutlet var tableView: UITableView!
     
@@ -19,6 +19,10 @@ class TopicViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var dataSource = [TopicTableModel]()
     
     var currentOffset: CGFloat = 0.0
+    
+    var loadingView: UIView!
+    
+    var indicatorView: UIActivityIndicatorView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,6 +50,15 @@ class TopicViewController: UIViewController, UITableViewDelegate, UITableViewDat
         // Automatic row height settings
         tableView.estimatedRowHeight = 425
         tableView.rowHeight = UITableView.automaticDimension
+        
+        // loadingView appear when the application launches at first
+        loadingView = UIView()
+        loadingView.backgroundColor = UIColor.white
+        loadingView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+        indicatorView = UIActivityIndicatorView(style: .gray)
+        indicatorView.center = loadingView.center
+        loadingView.addSubview(indicatorView)
+        view.addSubview(loadingView)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -55,6 +68,11 @@ class TopicViewController: UIViewController, UITableViewDelegate, UITableViewDat
             self.navigationController?.navigationBar.prefersLargeTitles = true
             self.navigationItem.largeTitleDisplayMode = .automatic
         }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        UIApplication.shared.setStatusBarStyle(.default, animated: true)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -85,37 +103,15 @@ class TopicViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 } else {
                     print("Request failed.")
                 }
-                
+                self.endLoading()
                 self.refreshControl.endRefreshing()
                 self.tableView.reloadData()
             }
             DispatchQueue.main.async {
-                self.refreshControl.beginRefreshing()
+//                self.refreshControl.beginRefreshing()
+                self.startLoading()
             }
         }
-    }
-
-    // MARK: UIScrollView Delegate
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if scrollView.contentOffset.y > currentOffset && scrollView.contentOffset.y > 60 {
-            UIView.animate(withDuration: 2, animations: {
-                
-                self.navigationController?.setNavigationBarHidden(true, animated: true)
-                
-            }) { (isFinished) in
-                
-            }
-        } else {
-            UIView.animate(withDuration: 2, animations: {
-                self.navigationController?.setNavigationBarHidden(false, animated: true)
-            }) { (isFinished) in
-                
-            }
-        }
-    }
-    
-    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        currentOffset = scrollView.contentOffset.y
     }
     
     
@@ -154,6 +150,45 @@ class TopicViewController: UIViewController, UITableViewDelegate, UITableViewDat
         titleLabel.text = content.title
         
         return cell
+    }
+}
+
+extension TopicViewController {
+    
+    func startLoading() {
+        indicatorView.startAnimating()
+        loadingView.isHidden = false
+    }
+    
+    func endLoading() {
+        indicatorView.stopAnimating()
+        loadingView.isHidden = true
+    }
+    
+}
+
+// UIScrollViewDelegate extension
+extension TopicViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.y > currentOffset && scrollView.contentOffset.y > 60 {
+            UIView.animate(withDuration: 2, animations: {
+                
+                self.navigationController?.setNavigationBarHidden(true, animated: true)
+                
+            }) { (isFinished) in
+                
+            }
+        } else {
+            UIView.animate(withDuration: 2, animations: {
+                self.navigationController?.setNavigationBarHidden(false, animated: true)
+            }) { (isFinished) in
+                
+            }
+        }
+    }
+    
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        currentOffset = scrollView.contentOffset.y
     }
 }
 
