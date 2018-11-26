@@ -43,11 +43,11 @@ extension TopStoriesCell: UICollectionViewDelegate, UICollectionViewDataSource {
         let containerView = cell.contentView.viewWithTag(100)
         containerView?.layer.shadowColor = UIColor.gray.cgColor
         containerView?.layer.shadowOffset = CGSize(width: 0.0, height: 0.0)
-        containerView?.layer.shadowRadius = 12.0
-        containerView?.layer.shadowOpacity = 0.7
+        containerView?.layer.shadowRadius = 4.0
+        containerView?.layer.shadowOpacity = 0.5
         
         let innerView = cell.contentView.viewWithTag(101)
-        innerView?.layer.cornerRadius = 20.0
+        innerView?.layer.cornerRadius = 10.0
         
         let content = self.dataSource[indexPath.row] as TopicTopModel
         let imageView = cell.contentView.viewWithTag(102) as! UIImageView
@@ -62,6 +62,6 @@ extension TopStoriesCell: UICollectionViewDelegate, UICollectionViewDataSource {
 extension TopStoriesCell: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 335, height: 275)
+        return CGSize(width: 335, height: 220)
     }
 }

@@ -14,13 +14,11 @@ class TopicViewController: UIViewController {
     
     @IBOutlet var tableView: UITableView!
     
-    private let refreshControl = UIRefreshControl()
-    
     var dataSource = [TopicTableModel]()
     
     var topStoriesDataSource = [TopicTopModel]()
     
-    var currentOffset: CGFloat = 0.0
+//    var currentOffset: CGFloat = 0.0
     
     var loadingView: UIView!
     
@@ -41,18 +39,12 @@ class TopicViewController: UIViewController {
     // Initial settings
     func firstSettings() {
         
-        self.navigationItem.title = "今日精选"
+        tableView.refreshControl = UIRefreshControl()
         
-        if #available(iOS 10.0, *) {
-            tableView.refreshControl = refreshControl
-        } else {
-            tableView.addSubview(refreshControl)
-        }
-        
-        refreshControl.addTarget(self, action: #selector(refreshTopicList(_:)), for: .valueChanged)
+        tableView.refreshControl?.addTarget(self, action: #selector(refreshTopicList(_:)), for: .valueChanged)
         
         // Automatic row height settings
-        tableView.estimatedRowHeight = 425
+        tableView.estimatedRowHeight = 325
         tableView.rowHeight = UITableView.automaticDimension
         
         // loadingView appear when the application launches at first
@@ -71,16 +63,14 @@ class TopicViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        if #available(iOS 11.0, *) {
-            self.navigationController?.navigationBar.prefersLargeTitles = true
-            self.navigationItem.largeTitleDisplayMode = .automatic
-        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         UIApplication.shared.setStatusBarStyle(.default, animated: true)
+        UIView.animate(withDuration: 2, animations: {
+            self.navigationController?.setNavigationBarHidden(false, animated: true)
+        })
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -109,20 +99,19 @@ class TopicViewController: UIViewController {
                 let topModel = TopicTopModel.parseResponsedObject(from: element as? NSDictionary)
                 self.topStoriesDataSource.append(topModel!)
             }
+            self.tableView.refreshControl?.endRefreshing()
             self.endLoading()
-            self.refreshControl.endRefreshing()
             self.tableView.reloadData()
         }, failure: { (error) in
             print("Request failed.")
+            self.tableView.refreshControl?.endRefreshing()
             self.endLoading()
-            self.refreshControl.endRefreshing()
             self.tableView.reloadData()
         })
         
         
         DispatchQueue.main.async {
             // self.refreshControl.beginRefreshing()
-            self.startLoading()
         }
         
     }
@@ -137,12 +126,10 @@ class TopicViewController: UIViewController {
             }
             
             self.endLoading()
-            self.refreshControl.endRefreshing()
             self.tableView.reloadData()
         }, failure: { (error) in
             print("Request failed.")
             self.endLoading()
-            self.refreshControl.endRefreshing()
             self.tableView.reloadData()
             
         })
@@ -154,11 +141,11 @@ class TopicViewController: UIViewController {
         let view = cell.contentView.viewWithTag(100)
         view?.layer.shadowColor = UIColor.gray.cgColor
         view?.layer.shadowOffset = CGSize(width: 0.0, height: 0.0)
-        view?.layer.shadowRadius = 12.0
+        view?.layer.shadowRadius = 8.0
         view?.layer.shadowOpacity = 0.7
         
         let innerView = cell.contentView.viewWithTag(101)
-        innerView?.layer.cornerRadius = 20.0
+        innerView?.layer.cornerRadius = 10.0
         
         let content = self.dataSource[indexPath.row] as TopicTableModel
         let imageView = cell.contentView.viewWithTag(102) as! UIImageView
@@ -199,7 +186,7 @@ extension TopicViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.section == 0 {
-            return 300
+            return 250
         }
         
         return UITableView.automaticDimension
@@ -245,27 +232,27 @@ extension TopicViewController: UITableViewDataSource, UITableViewDelegate {
 }
 
 // MARK: UIScrollViewDelegate extension
-extension TopicViewController: UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if scrollView.contentOffset.y > currentOffset && scrollView.contentOffset.y > 60 {
-            UIView.animate(withDuration: 2, animations: {
-                
-                self.navigationController?.setNavigationBarHidden(true, animated: true)
-                
-            }) { (isFinished) in
-                
-            }
-        } else {
-            UIView.animate(withDuration: 2, animations: {
-                self.navigationController?.setNavigationBarHidden(false, animated: true)
-            }) { (isFinished) in
-                
-            }
-        }
-    }
-    
-    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        currentOffset = scrollView.contentOffset.y
-    }
-}
+//extension TopicViewController: UIScrollViewDelegate {
+//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        if scrollView.contentOffset.y > currentOffset && scrollView.contentOffset.y > 60 {
+//            UIView.animate(withDuration: 2, animations: {
+//
+//                self.navigationController?.setNavigationBarHidden(true, animated: true)
+//
+//            }) { (isFinished) in
+//
+//            }
+//        } else {
+//            UIView.animate(withDuration: 2, animations: {
+//                self.navigationController?.setNavigationBarHidden(false, animated: true)
+//            }) { (isFinished) in
+//
+//            }
+//        }
+//    }
+//
+//    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+//        currentOffset = scrollView.contentOffset.y
+//    }
+//}
 
