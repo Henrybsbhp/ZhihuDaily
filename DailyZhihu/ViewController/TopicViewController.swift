@@ -58,7 +58,7 @@ class TopicViewController: UIViewController {
         
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyyMMdd"
-        dateString = formatter.string(from: Date())
+        dateString = formatter.string(from: Date.yesterday)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -85,7 +85,7 @@ class TopicViewController: UIViewController {
     }
     
     func fetchTopicList() {
-        
+        dataSource.removeAll()
             
         NetworkManager.shared.request(NetworkManager.shared.baseURL + "4/stories/latest", success: { (JSON) in
             let stories = JSON["stories"] as! NSArray

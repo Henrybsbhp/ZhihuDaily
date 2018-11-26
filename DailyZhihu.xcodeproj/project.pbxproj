@@ -20,6 +20,7 @@
 		FA341A412196C2E70049B42F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA341A3F2196C2E70049B42F /* LaunchScreen.storyboard */; };
 		FA341A4C2196C2E70049B42F /* DailyZhihuTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA341A4B2196C2E70049B42F /* DailyZhihuTests.swift */; };
 		FA341A572196C2E70049B42F /* DailyZhihuUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA341A562196C2E70049B42F /* DailyZhihuUITests.swift */; };
+		FA55743F21ACAC2700B2FB72 /* SystemExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA55743E21ACAC2700B2FB72 /* SystemExtensions.swift */; };
 		FAB5275D2199A5140084CF6C /* DailyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB5275C2199A5140084CF6C /* DailyModel.swift */; };
 /* End PBXBuildFile section */
 
@@ -62,6 +63,7 @@
 		FA341A522196C2E70049B42F /* DailyZhihuUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DailyZhihuUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA341A562196C2E70049B42F /* DailyZhihuUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyZhihuUITests.swift; sourceTree = "<group>"; };
 		FA341A582196C2E70049B42F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FA55743E21ACAC2700B2FB72 /* SystemExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemExtensions.swift; sourceTree = "<group>"; };
 		FAB5275C2199A5140084CF6C /* DailyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -181,6 +183,7 @@
 				031D047B21ABCA9700CF530F /* ViewController */,
 				FA341A362196C2E50049B42F /* AppDelegate.swift */,
 				03FED71F21ABA6C200D54BAA /* TopStoriesCell.swift */,
+				FA55743E21ACAC2700B2FB72 /* SystemExtensions.swift */,
 				FA341A3A2196C2E50049B42F /* Main.storyboard */,
 				FA341A3D2196C2E70049B42F /* Assets.xcassets */,
 				FA341A3F2196C2E70049B42F /* LaunchScreen.storyboard */,
@@ -392,6 +395,7 @@
 				FA341A392196C2E50049B42F /* TopicViewController.swift in Sources */,
 				036CC5D121A5349400B546D9 /* NewsContentViewController.swift in Sources */,
 				031D048421ABCC7000CF530F /* NetworkManager.swift in Sources */,
+				FA55743F21ACAC2700B2FB72 /* SystemExtensions.swift in Sources */,
 				0322017A21A6863100E634B5 /* SJWebView.swift in Sources */,
 				031D048221ABCB5E00CF530F /* Api.swift in Sources */,
 				03FED72021ABA6C200D54BAA /* TopStoriesCell.swift in Sources */,

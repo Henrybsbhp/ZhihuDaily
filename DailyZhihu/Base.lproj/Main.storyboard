@@ -183,8 +183,8 @@
                     </view>
                     <navigationItem key="navigationItem" id="b9H-a6-eex">
                         <barButtonItem key="leftBarButtonItem" enabled="NO" title="今日精选" style="plain" id="dL7-zG-dUQ">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="cHv-1p-dtr">
-                                <rect key="frame" x="16" y="4.5" width="83" height="35"/>
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="cHv-1p-dtr">
+                                <rect key="frame" x="16" y="4" width="83" height="36"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                                 <state key="normal" title="今日精选">
