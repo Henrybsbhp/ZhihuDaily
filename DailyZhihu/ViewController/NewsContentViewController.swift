@@ -68,7 +68,7 @@ class NewsContentViewController: UIViewController, UIScrollViewDelegate {
         safeView = UIView()
         
         if UIDevice().userInterfaceIdiom == .phone {
-            switch screenH {
+            switch UIScreen.main.nativeBounds.height {
             case 2436:
                 print("iPhone X, XS")
                 safeView.frame = CGRect(x: 0, y: 0, width: screenW, height: 44)
