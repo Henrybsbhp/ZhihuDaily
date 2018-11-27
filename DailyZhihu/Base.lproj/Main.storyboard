@@ -13,18 +13,18 @@
         <!--Topic View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController storyboardIdentifier="TopicViewController" id="BYZ-38-t0r" customClass="TopicViewController" customModule="DailyZhihu" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="TopicViewController" automaticallyAdjustsScrollViewInsets="NO" id="BYZ-38-t0r" customClass="TopicViewController" customModule="DailyZhihu" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="shs-YX-qiH">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="shs-YX-qiH">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <viewLayoutGuide key="safeArea" id="StV-xm-nz8"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TopStoriesCell" rowHeight="250" id="1cj-Vl-CuK" customClass="TopStoriesCell" customModule="DailyZhihu" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="375" height="250"/>
+                                        <rect key="frame" x="0.0" y="55.5" width="375" height="250"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="1cj-Vl-CuK" id="fi6-le-mrx">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="250"/>
@@ -111,7 +111,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="TopicCell" rowHeight="310" id="VBg-N4-rIc">
-                                        <rect key="frame" x="0.0" y="278" width="375" height="310"/>
+                                        <rect key="frame" x="0.0" y="305.5" width="375" height="310"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="VBg-N4-rIc" id="3Tu-Ey-axW">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="310"/>
@@ -182,12 +182,12 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" id="b9H-a6-eex">
-                        <barButtonItem key="leftBarButtonItem" enabled="NO" title="今日精选" style="plain" id="dL7-zG-dUQ">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="cHv-1p-dtr">
-                                <rect key="frame" x="16" y="4" width="83" height="36"/>
+                        <barButtonItem key="leftBarButtonItem" enabled="NO" title="今日精选" width="200" style="plain" id="dL7-zG-dUQ">
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="cHv-1p-dtr">
+                                <rect key="frame" x="16" y="4" width="200" height="36"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
-                                <state key="normal" title="今日精选">
+                                <state key="normal" title="今日精选                  ">
                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                             </button>
@@ -197,7 +197,7 @@
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
                     <connections>
                         <outlet property="tableView" destination="shs-YX-qiH" id="jCw-AV-V0c"/>
-                        <outlet property="topTitleButtonItem" destination="dL7-zG-dUQ" id="pcD-62-nYO"/>
+                        <outlet property="topTitleButton" destination="cHv-1p-dtr" id="QBT-MR-gRw"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

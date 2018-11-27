@@ -9,11 +9,12 @@
 import UIKit
 import Alamofire
 import Kingfisher
+import SwiftDate
 
 class TopicViewController: UIViewController {
     
     @IBOutlet var tableView: UITableView!
-    @IBOutlet weak var topTitleButtonItem: UIBarButtonItem!
+    @IBOutlet var topTitleButton: UIButton!
     
     var dataSource = [Any]()
     
@@ -22,6 +23,8 @@ class TopicViewController: UIViewController {
 //    var currentOffset: CGFloat = 0.0
     
     var dateString: String?
+    
+    var dateArray = [String]()
     
 
     override func viewDidLoad() {
@@ -65,7 +68,10 @@ class TopicViewController: UIViewController {
         
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyyMMdd"
-        dateString = formatter.string(from: Date.yesterday)
+        dateString = formatter.string(from: Date())
+        
+        // Remove the blank space at the top of the grouped tableView.
+        tableView.tableHeaderView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: 0.0, height: Double(FLT_MIN)))
         
     }
     
@@ -79,6 +85,9 @@ class TopicViewController: UIViewController {
         NetworkManager.shared.request(NetworkManager.shared.baseURL + "4/stories/latest", success: { (JSON) in
             let stories = JSON["stories"] as! NSArray
             let topStories = JSON["top_stories"] as! NSArray
+            let dateString = JSON["date"] as! String
+            var dateArr = [dateString]
+            self.dateArray = dateArr
             var sectionDataArray = [Any]()
             
             var tempStoriesArray = [TopicTopModel]()
@@ -121,6 +130,7 @@ class TopicViewController: UIViewController {
             
             let stories = JSON["stories"] as! NSArray
             self.dateString = JSON["date"] as? String
+            self.dateArray.append(self.dateString!)
             var tempDataArray = [TopicTableModel]()
             for element in stories {
                 let topicTableModel = TopicTableModel.parseResponsedObject(from: element as? NSDictionary)
@@ -189,9 +199,9 @@ extension TopicViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         // 滚动到最后一个section的第一个元素时，加载更多数据
-        if self.dataSource.count > 0 {
-//            let lastSectionData: [TopicTableModel] = self.dataSource[indexPath.section] as! [TopicTableModel]
-            if indexPath.section == self.dataSource.count && indexPath.row == 0 {
+        if indexPath.section == self.dataSource.count - 1 {
+            let lastSectionData: [TopicTableModel] = self.dataSource[indexPath.section] as! [TopicTableModel]
+            if indexPath.row == lastSectionData.count - 1 {
                 let spinner = UIActivityIndicatorView(style: .gray)
                 spinner.startAnimating()
                 spinner.frame = CGRect(x: 0, y: 0, width: screenW, height: 44)
@@ -201,6 +211,7 @@ extension TopicViewController: UITableViewDataSource, UITableViewDelegate {
                 loadMoreData()
             }
         }
+        
     }
     
     // MARK: UITableView DataSource
@@ -210,11 +221,46 @@ extension TopicViewController: UITableViewDataSource, UITableViewDelegate {
             return 1
         }
         
-        return self.dataSource.count
+        let topicDataSource: [TopicTableModel] = self.dataSource[section] as! [TopicTableModel]
+        
+        return topicDataSource.count
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return self.dataSource.count
+    }
+    
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        
+        if section == 0 {
+            return nil
+        }
+        
+        let dateStr = self.dateArray[section - 1]
+        let date = DateInRegion(dateStr, formats: ["yyyyMMdd"])
+        let containerView = UIView()
+        containerView.backgroundColor = .white
+        containerView.frame = CGRect(x: 15, y: 0, width: screenW - 30, height: 40)
+        let label = UILabel()
+        label.text = "\(date!.year)年\(date!.month)月\(date!.day)日"
+        label.font = UIFont.boldSystemFont(ofSize: 25)
+        label.frame = CGRect(x: 15, y: 0, width: screenW - 30, height: 40)
+        containerView.addSubview(label)
+        
+        return containerView
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if section == 0 || section == 1 {
+            return 0
+        }
+        
+        return 40
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -238,8 +284,8 @@ extension TopicViewController: UITableViewDataSource, UITableViewDelegate {
 }
 
 // MARK: UIScrollViewDelegate extension
-//extension TopicViewController: UIScrollViewDelegate {
-//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+extension TopicViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
 //        if scrollView.contentOffset.y > currentOffset && scrollView.contentOffset.y > 60 {
 //            UIView.animate(withDuration: 2, animations: {
 //
@@ -255,10 +301,24 @@ extension TopicViewController: UITableViewDataSource, UITableViewDelegate {
 //
 //            }
 //        }
-//    }
-//
+        
+        var section = 0
+        if let index = tableView.indexPathsForVisibleRows?.first?.section {
+            section = index
+            if section > 1 {
+                let dateStr = self.dateArray[section - 1]
+                let date = DateInRegion(dateStr, formats: ["yyyyMMdd"])
+                self.topTitleButton.setTitle("\(date!.year)年\(date!.month)月\(date!.day)日", for: .disabled)
+            } else {
+                self.topTitleButton.setTitle("今日精选                  ", for: .disabled)
+            }
+        }
+        
+        
+    }
+
 //    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
 //        currentOffset = scrollView.contentOffset.y
 //    }
-//}
+}
 
