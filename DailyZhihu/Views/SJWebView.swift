@@ -11,9 +11,6 @@ import WebKit
 
 class SJWebView: WKWebView {
     
-    let screenW: CGFloat = UIScreen.main.bounds.width
-    let screenH: CGFloat = UIScreen.main.bounds.height
-    
     var contentModel = NewsContentModel()
     
     // MARK: - Views on webView
@@ -21,8 +18,6 @@ class SJWebView: WKWebView {
     var titleLabel: UILabel!
     var maskImageView: UIImageView!
     var imgSourceLabel: UILabel!
-    var indicatorView: UIActivityIndicatorView!
-    var loadingView: UIView!
     
     init() {
         // 设置内容自适应
@@ -34,14 +29,6 @@ class SJWebView: WKWebView {
         config.userContentController = wkUControl
         super.init(frame: CGRect.zero, configuration: config)
         self.navigationDelegate = self
-        
-        loadingView = UIView()
-        loadingView.backgroundColor = UIColor.white
-        loadingView.frame = CGRect.init(x: 0, y: 0, width: screenW, height: screenH)
-        indicatorView = UIActivityIndicatorView(style: .gray)
-        indicatorView.center = loadingView.center
-        loadingView.addSubview(indicatorView)
-        scrollView.addSubview(loadingView)
     }
     
     func setupUI() {
@@ -95,36 +82,24 @@ class SJWebView: WKWebView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        indicatorView.center = self.center
+        scrollView.startActivityAnimation(scrollView.center)
     }
-}
-
-extension SJWebView {
-    
-    func startLoading() {
-        indicatorView.startAnimating()
-        loadingView.isHidden = false
-    }
-    
-    func endloading() {
-        indicatorView.stopAnimating()
-        loadingView.isHidden = true
-    }
-    
 }
 
 extension SJWebView: WKNavigationDelegate {
     
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        startLoading()
+//        scrollView.startActivityAnimation(scrollView.center)
         decisionHandler(.allow)
     }
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        endloading()
+        scrollView.stopActivityAnimation()
     }
     
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-        endloading()
+        scrollView.stopActivityAnimation()
     }
+    
+
 }

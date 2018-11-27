@@ -38,7 +38,7 @@ class NewsContentViewController: UIViewController, UIScrollViewDelegate {
 //        self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
         
         webView = SJWebView()
-        webView.frame = CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height + 0)
+        webView.frame = CGRect.init(x: 0, y: 0, width: screenW, height: screenH + 0)
         webView.scrollView.delegate = self
         
         view.addSubview(webView)
@@ -68,19 +68,19 @@ class NewsContentViewController: UIViewController, UIScrollViewDelegate {
         safeView = UIView()
         
         if UIDevice().userInterfaceIdiom == .phone {
-            switch UIScreen.main.nativeBounds.height {
+            switch screenH {
             case 2436:
                 print("iPhone X, XS")
-                safeView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 44)
+                safeView.frame = CGRect(x: 0, y: 0, width: screenW, height: 44)
             case 2688:
                 print("iPhone XS Max")
-                safeView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 44)
+                safeView.frame = CGRect(x: 0, y: 0, width: screenW, height: 44)
             case 1792:
                 print("iPhone XR")
-                safeView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 44)
+                safeView.frame = CGRect(x: 0, y: 0, width: screenW, height: 44)
             default:
                 print("iPhone with no notch")
-                safeView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 20)
+                safeView.frame = CGRect(x: 0, y: 0, width: screenW, height: 20)
             }
         }
         
@@ -99,10 +99,6 @@ class NewsContentViewController: UIViewController, UIScrollViewDelegate {
             print("Request failed.")
         })
         
-        DispatchQueue.main.async {
-            self.webView.startLoading()
-        }
-        
     }
     
     // MARK: UIScrollView Delegate
@@ -117,7 +113,7 @@ class NewsContentViewController: UIViewController, UIScrollViewDelegate {
             } else {
                 let newHeight = abs(offset + 88) + 288
                 
-                scaleView.frame = CGRect(x: 0, y: offset, width: UIScreen.main.bounds.width, height: newHeight)
+                scaleView.frame = CGRect(x: 0, y: offset, width: screenW, height: newHeight)
             }
         }
         

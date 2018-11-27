@@ -197,6 +197,7 @@
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
                     <connections>
                         <outlet property="tableView" destination="shs-YX-qiH" id="jCw-AV-V0c"/>
+                        <outlet property="topTitleButtonItem" destination="dL7-zG-dUQ" id="pcD-62-nYO"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

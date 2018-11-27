@@ -1,20 +1,24 @@
 PODS:
   - Alamofire (4.7.3)
   - Kingfisher (4.10.1)
+  - SwiftDate (5.0.13)
 
 DEPENDENCIES:
   - Alamofire (~> 4.7)
   - Kingfisher (~> 4.0)
+  - SwiftDate (~> 5.0.4)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - Alamofire
     - Kingfisher
+    - SwiftDate
 
 SPEC CHECKSUMS:
   Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
   Kingfisher: c148cd7b47ebde9989f6bc7c27dcaa79d81279a0
+  SwiftDate: f4aea5fa9dee812485f34041121a4cbde01b0dee
 
-PODFILE CHECKSUM: 5d996246ca0b051a8c9f1f580a5088ad14b4c646
+PODFILE CHECKSUM: e590072059eed305f1f00492b8166f3e6e044aea
 
 COCOAPODS: 1.5.3
