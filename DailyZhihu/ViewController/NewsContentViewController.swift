@@ -13,6 +13,8 @@ import WebKit
 
 class NewsContentViewController: UIViewController, UIScrollViewDelegate {
     
+    var backButton: UIButton!
+    
     var newsID = String()
     
     var newsModel: NewsContentModel!
@@ -45,6 +47,8 @@ class NewsContentViewController: UIViewController, UIScrollViewDelegate {
         
         setupSafeView()
         
+        setupBackButton()
+        
         fetchNewsList()
     }
     
@@ -62,6 +66,25 @@ class NewsContentViewController: UIViewController, UIScrollViewDelegate {
     override func viewWillDisappear(_ animated: Bool) {
         super .viewWillDisappear(animated)
         
+    }
+    
+    @objc func backButtonTapped(_ sender: UIButton) {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    func setupBackButton() {
+        backButton = UIButton()
+        backButton.frame = CGRect(x: 25, y: screenH - 80, width: 40, height: 40)
+        backButton.backgroundColor = .white
+        backButton.setImage(UIImage(named: "Image_Back"), for: .normal)
+        backButton.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        backButton.layer.cornerRadius = 20
+        backButton.layer.shadowColor = UIColor.gray.cgColor
+        backButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.0)
+        backButton.layer.shadowRadius = 8.0
+        backButton.layer.shadowOpacity = 0.7
+        backButton.addTarget(self, action: #selector(backButtonTapped(_:)), for: .touchUpInside)
+        view.addSubview(backButton)
     }
     
     func setupSafeView() {
@@ -110,9 +133,9 @@ class NewsContentViewController: UIViewController, UIScrollViewDelegate {
         if let scaleView = webView.topImageView {
             if offset > -88 {
 //                scaleView.top = -offset
+                self.backButton.isHidden = false
             } else {
                 let newHeight = abs(offset + 88) + 288
-                
                 scaleView.frame = CGRect(x: 0, y: offset, width: screenW, height: newHeight)
             }
         }
@@ -123,6 +146,21 @@ class NewsContentViewController: UIViewController, UIScrollViewDelegate {
         } else {
             safeView.isHidden = true
             UIApplication.shared.setStatusBarStyle(.lightContent, animated: true)
+        }
+        
+        if offset < currentOffset || offset < 0 {
+            self.backButton.isHidden = false
+        } else {
+            self.backButton.isHidden = true
+        }
+        
+        // Detect whether the wenView reaches to the bottom
+        webView.evaluateJavaScript("document.body.scrollHeight") { (result, error) in
+            if let height = result as? CGFloat {
+                if offset >= (height - scrollView.frame.size.height) {
+                    self.backButton.isHidden = false
+                }
+            }
         }
     }
     

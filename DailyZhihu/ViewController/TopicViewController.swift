@@ -316,9 +316,5 @@ extension TopicViewController: UIScrollViewDelegate {
         
         
     }
-
-//    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-//        currentOffset = scrollView.contentOffset.y
-//    }
 }
 
