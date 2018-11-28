@@ -62,6 +62,6 @@ extension TopStoriesCell: UICollectionViewDelegate, UICollectionViewDataSource {
 extension TopStoriesCell: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 335, height: 220)
+        return CGSize(width: 319, height: 210)
     }
 }

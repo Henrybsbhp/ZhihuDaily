@@ -30,6 +30,9 @@ class TopicViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 300
+        
         firstSettings()
         
         // Get the latest topic.
@@ -81,7 +84,10 @@ class TopicViewController: UIViewController {
     }
     
     func fetchTopicList() {
-            
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyyMMdd"
+        dateString = formatter.string(from: Date())
+        
         NetworkManager.shared.request(NetworkManager.shared.baseURL + "4/stories/latest", success: { (JSON) in
             let stories = JSON["stories"] as! NSArray
             let topStories = JSON["top_stories"] as! NSArray
@@ -198,7 +204,8 @@ extension TopicViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        // 滚动到最后一个section的第一个元素时，加载更多数据
+        
+        // 加载更多数据
         if indexPath.section == self.dataSource.count - 1 {
             let lastSectionData: [TopicTableModel] = self.dataSource[indexPath.section] as! [TopicTableModel]
             if indexPath.row == lastSectionData.count - 1 {
@@ -233,7 +240,7 @@ extension TopicViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
-        if section == 0 {
+        if section == 0 || section == 1 {
             return nil
         }
         
@@ -243,7 +250,7 @@ extension TopicViewController: UITableViewDataSource, UITableViewDelegate {
         containerView.backgroundColor = .white
         containerView.frame = CGRect(x: 15, y: 0, width: screenW - 30, height: 40)
         let label = UILabel()
-        label.text = "\(date!.year)年\(date!.month)月\(date!.day)日"
+        label.text = "\(date!.year) 年 \(date!.month) 月 \(date!.day) 日"
         label.font = UIFont.boldSystemFont(ofSize: 25)
         label.frame = CGRect(x: 15, y: 0, width: screenW - 30, height: 40)
         containerView.addSubview(label)
@@ -253,14 +260,14 @@ extension TopicViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if section == 0 || section == 1 {
-            return 0
+            return 0.01
         }
         
         return 40
     }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 0
+        return 0.01
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -308,7 +315,7 @@ extension TopicViewController: UIScrollViewDelegate {
             if section > 1 {
                 let dateStr = self.dateArray[section - 1]
                 let date = DateInRegion(dateStr, formats: ["yyyyMMdd"])
-                self.topTitleButton.setTitle("\(date!.year)年\(date!.month)月\(date!.day)日", for: .disabled)
+                self.topTitleButton.setTitle("\(date!.year) 年 \(date!.month) 月 \(date!.day) 日", for: .disabled)
             } else {
                 self.topTitleButton.setTitle("今日精选                  ", for: .disabled)
             }
