@@ -105,6 +105,9 @@ class NewsContentViewController: UIViewController, UIScrollViewDelegate {
                 print("iPhone with no notch")
                 safeView.frame = CGRect(x: 0, y: 0, width: screenW, height: 20)
             }
+        } else {
+            // iPad
+            safeView.frame = CGRect(x: 0, y: 0, width: screenW, height: 20)
         }
         
         safeView.backgroundColor = .white
