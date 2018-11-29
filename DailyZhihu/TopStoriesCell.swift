@@ -19,7 +19,7 @@ class TopStoriesCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        collectionView = self.contentView.viewWithTag(99) as! UICollectionView
+        collectionView = self.contentView.viewWithTag(99) as? UICollectionView
     }
 }
 
