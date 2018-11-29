@@ -92,7 +92,7 @@ class TopicViewController: UIViewController {
             let stories = JSON["stories"] as! NSArray
             let topStories = JSON["top_stories"] as! NSArray
             let dateString = JSON["date"] as! String
-            var dateArr = [dateString]
+            let dateArr = [dateString]
             self.dateArray = dateArr
             var sectionDataArray = [Any]()
             
@@ -123,11 +123,6 @@ class TopicViewController: UIViewController {
             self.view.stopActivityAnimation()
             self.tableView.reloadData()
         })
-        
-        
-        DispatchQueue.main.async {
-            // self.refreshControl.beginRefreshing()
-        }
         
     }
     
