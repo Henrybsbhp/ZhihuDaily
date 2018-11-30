@@ -92,3 +92,25 @@ class SJLoadingView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
+extension UIView {
+    func isHiddenAnimated(_ isHidden:Bool, duration: TimeInterval) {
+        UIView.animate(withDuration: duration, animations: {
+            
+            if isHidden {
+                self.alpha = 0
+            } else {
+                self.alpha = 1
+            }
+
+        }, completion: { _ in
+            
+            if isHidden {
+                self.isHidden = true
+            } else {
+                self.isHidden = false
+            }
+
+        })
+    }
+}
