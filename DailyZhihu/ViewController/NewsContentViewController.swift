@@ -136,7 +136,7 @@ class NewsContentViewController: UIViewController, UIScrollViewDelegate {
         if let scaleView = webView.topImageView {
             if offset > -88 {
 //                scaleView.top = -offset
-//                self.backButton.isHiddenAnimated(false, duration: 0.2)
+//                self.backButton.isHiddenAnimated(false, duration: 0.5)
             } else {
                 let newHeight = abs(offset + 88) + 288
                 scaleView.frame = CGRect(x: 0, y: offset, width: screenW, height: newHeight)
@@ -152,16 +152,16 @@ class NewsContentViewController: UIViewController, UIScrollViewDelegate {
         }
         
         if offset < currentOffset || offset < 0 {
-            self.backButton.isHiddenAnimated(false, duration: 0.2)
+            self.backButton.isHiddenAnimated(false, duration: 0.5)
         } else {
-            self.backButton.isHiddenAnimated(true, duration: 0.2)
+            self.backButton.isHiddenAnimated(true, duration: 0.5)
         }
         
         // Detect whether the wenView reaches to the bottom
         webView.evaluateJavaScript("document.body.scrollHeight") { (result, error) in
             if let height = result as? CGFloat {
                 if offset >= (height - scrollView.frame.size.height) {
-                    self.backButton.isHiddenAnimated(false, duration: 0.2)
+                    self.backButton.isHiddenAnimated(false, duration: 0.5)
                 }
             }
         }

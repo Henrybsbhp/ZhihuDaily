@@ -14,19 +14,45 @@ struct TopicTableModel {
     var imageURL: String? //  图像地址（官方 API 使用数组形式。目前暂未有使用多张图片的情形出现，曾见无 images 属性的情况，请在使用中注意 ）
     var id: String? // url 与 share_url 中最后的数字（应为内容的 id）
     
-    static func parseResponsedObject(from dic: NSDictionary?) -> TopicTableModel? {
-        if (dic == nil) {
+    init(title: String, imageURL: String, id: String) {
+        self.title = title
+        self.imageURL = imageURL
+        self.id = id
+    }
+    
+    init?(dictionary: [String: AnyObject]) {
+        let images = dictionary["images"] as! NSArray
+        let imageURL = images[0] as! String
+        let title = dictionary["title"] as! String
+        let idInt = dictionary["id"] as! NSInteger
+        let id = String(idInt)
+        
+        self.init(title: title, imageURL: imageURL, id: id)
+    }
+    
+    static func allTopicTableModels(from array: Array<Any>?) -> [TopicTableModel]? {
+        
+        if array == nil {
             return nil
         }
         
-        var topicModel = TopicTableModel()
-        let images = dic?["images"] as! NSArray
-        let id = dic?["id"] as! NSInteger
-        topicModel.title = dic?["title"] as? String
-        topicModel.imageURL = images[0] as? String
-        topicModel.id = String(id)
+        var models = [TopicTableModel]()
+        for item in array! {
+            if let model = TopicTableModel(dictionary: item as! [String : AnyObject]) {
+                models.append(model)
+            }
+        }
         
-        return topicModel
+        return models
+        
+//        var topicModel = TopicTableModel()
+//        let images = dic?["images"] as! NSArray
+//        let id = dic?["id"] as! NSInteger
+//        topicModel.title = dic?["title"] as? String
+//        topicModel.imageURL = images[0] as? String
+//        topicModel.id = String(id)
+//        
+//        return topicModel
     }
 }
 

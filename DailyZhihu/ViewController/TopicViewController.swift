@@ -104,13 +104,14 @@ class TopicViewController: UIViewController {
             
             sectionDataArray.append(tempStoriesArray)
             
-            var tempDataArray = [TopicTableModel]()
-            for element in stories {
-                let topicTableModel = TopicTableModel.parseResponsedObject(from: element as? NSDictionary)
-                tempDataArray.append(topicTableModel!)
-            }
+            let topicTableModels = TopicTableModel.allTopicTableModels(from: stories as? Array<Any>)
+//            var tempDataArray = [TopicTableModel]()
+//            for element in stories {
+//                let topicTableModel = TopicTableModel.parseResponsedObject(from: element as? NSDictionary)
+//                tempDataArray.append(topicTableModel!)
+//            }
             
-            sectionDataArray.append(tempDataArray)
+            sectionDataArray.append(topicTableModels)
             self.dataSource = sectionDataArray
             
             self.topStoriesDataSource = tempStoriesArray
@@ -132,12 +133,14 @@ class TopicViewController: UIViewController {
             let stories = JSON["stories"] as! NSArray
             self.dateString = JSON["date"] as? String
             self.dateArray.append(self.dateString!)
-            var tempDataArray = [TopicTableModel]()
-            for element in stories {
-                let topicTableModel = TopicTableModel.parseResponsedObject(from: element as? NSDictionary)
-                tempDataArray.append(topicTableModel!)
-            }
-            self.dataSource.append(tempDataArray)
+            
+            let topicTableModels = TopicTableModel.allTopicTableModels(from: stories as? Array<Any>)
+//            var tempDataArray = [TopicTableModel]()
+//            for element in stories {
+//                let topicTableModel = TopicTableModel.parseResponsedObject(from: element as? NSDictionary)
+//                tempDataArray.append(topicTableModel!)
+//            }
+            self.dataSource.append(topicTableModels!)
             
             self.tableView.tableFooterView?.isHidden = true
             self.tableView.reloadData()
