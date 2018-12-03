@@ -92,18 +92,23 @@ struct NewsContentModel {
     var body: String? // HTML 格式的新闻
     var css: [String]?// 供手机端的 WebView(UIWebView) 使用
     
-    static func parseResponsedObject(from dic: NSDictionary?) -> NewsContentModel? {
-        if (dic == nil) {
+    init(title: String, imageURL: String, imageSource: String, body: String, css: [String]) {
+        self.title = title
+        self.imageURL = imageURL
+        self.imageSource = imageSource
+        self.body = body
+        self.css = css
+    }
+    
+    init() {
+        self.init(title: "", imageURL: "", imageSource: "", body: "", css: [""])
+    }
+    
+    init?(dictionary: [String: AnyObject]) {
+        guard let title = dictionary["title"], let imageURL = dictionary["image"], let imageSource = dictionary["image_source"], let css = dictionary["css"], let body = dictionary["body"] else {
             return nil
         }
         
-        var newsContentModel = NewsContentModel()
-        newsContentModel.title = dic?["title"] as? String
-        newsContentModel.imageURL = dic?["image"] as? String
-        newsContentModel.imageSource = dic?["image_source"] as? String
-        newsContentModel.css =  dic?["css"] as? [String]
-        newsContentModel.body = dic?["body"] as? String
-        
-        return newsContentModel
+        self.init(title: title as! String, imageURL: imageURL as! String, imageSource: imageSource as! String, body: body as! String, css: css as! [String])
     }
 }

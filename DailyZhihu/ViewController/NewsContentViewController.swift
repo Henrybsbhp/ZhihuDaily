@@ -118,7 +118,7 @@ class NewsContentViewController: UIViewController, UIScrollViewDelegate {
     func fetchNewsList() {
         
         NetworkManager.shared.request(NetworkManager.shared.baseURL + "4/news/" + self.newsID, success: { (JSON) in
-            self.newsModel = NewsContentModel.parseResponsedObject(from: JSON)
+            self.newsModel = NewsContentModel(dictionary: JSON as! [String : AnyObject])
             self.webView.contentModel = self.newsModel
             self.webView.load()
         }, failure: { (error) in
