@@ -32,48 +32,55 @@ struct TopicTableModel {
     
     static func allTopicTableModels(from array: Array<Any>?) -> [TopicTableModel]? {
         
-        if array == nil {
+        guard let dicArray = array else {
             return nil
         }
         
         var models = [TopicTableModel]()
-        for item in array! {
+        for item in dicArray {
             if let model = TopicTableModel(dictionary: item as! [String : AnyObject]) {
                 models.append(model)
             }
         }
         
         return models
-        
-//        var topicModel = TopicTableModel()
-//        let images = dic?["images"] as! NSArray
-//        let id = dic?["id"] as! NSInteger
-//        topicModel.title = dic?["title"] as? String
-//        topicModel.imageURL = images[0] as? String
-//        topicModel.id = String(id)
-//        
-//        return topicModel
     }
 }
 
 struct TopicTopModel {
     
     var title: String?
-    var image: String?
+    var imageURL: String?
     var id: String?
     
-    static func parseResponsedObject(from dic: NSDictionary?) -> TopicTopModel? {
-        if dic == nil {
+    init(title: String, imageURL: String, id: String) {
+        self.title = title
+        self.imageURL = imageURL
+        self.id = id
+    }
+    
+    init?(dictionary: [String: AnyObject]) {
+        let title = dictionary["title"] as! String
+        let imageURL = dictionary["image"] as! String
+        let idInt = dictionary["id"] as! NSInteger
+        let id = String(idInt)
+        
+        self.init(title: title, imageURL: imageURL, id: id)
+    }
+    
+    static func allTopicTopModels(from array: Array<Any>?) -> [TopicTopModel]? {
+        guard let dicArray = array else {
             return nil
         }
         
-        var topModel = TopicTopModel()
-        let id = dic?["id"] as! NSInteger
-        topModel.title = dic?["title"] as? String
-        topModel.image = dic?["image"] as? String
-        topModel.id = String(id)
+        var models = [TopicTopModel]()
+        for item in dicArray {
+            if let model = TopicTopModel(dictionary: item as! [String: AnyObject]) {
+                models.append(model)
+            }
+        }
         
-        return topModel
+        return models
     }
 }
 

@@ -96,25 +96,16 @@ class TopicViewController: UIViewController {
             self.dateArray = dateArr
             var sectionDataArray = [Any]()
             
-            var tempStoriesArray = [TopicTopModel]()
-            for element in topStories {
-                let topModel = TopicTopModel.parseResponsedObject(from: element as? NSDictionary)
-                tempStoriesArray.append(topModel!)
-            }
-            
-            sectionDataArray.append(tempStoriesArray)
+            let topicTopModels = TopicTopModel.allTopicTopModels(from: topStories as? Array<Any>)
+           
+            sectionDataArray.append(topicTopModels as Any)
             
             let topicTableModels = TopicTableModel.allTopicTableModels(from: stories as? Array<Any>)
-//            var tempDataArray = [TopicTableModel]()
-//            for element in stories {
-//                let topicTableModel = TopicTableModel.parseResponsedObject(from: element as? NSDictionary)
-//                tempDataArray.append(topicTableModel!)
-//            }
             
-            sectionDataArray.append(topicTableModels)
+            sectionDataArray.append(topicTableModels as Any)
             self.dataSource = sectionDataArray
             
-            self.topStoriesDataSource = tempStoriesArray
+            self.topStoriesDataSource = topicTopModels!
             self.tableView.refreshControl?.endRefreshing()
             self.view.stopActivityAnimation()
             self.tableView.reloadData()
@@ -135,11 +126,7 @@ class TopicViewController: UIViewController {
             self.dateArray.append(self.dateString!)
             
             let topicTableModels = TopicTableModel.allTopicTableModels(from: stories as? Array<Any>)
-//            var tempDataArray = [TopicTableModel]()
-//            for element in stories {
-//                let topicTableModel = TopicTableModel.parseResponsedObject(from: element as? NSDictionary)
-//                tempDataArray.append(topicTableModel!)
-//            }
+
             self.dataSource.append(topicTableModels!)
             
             self.tableView.tableFooterView?.isHidden = true

@@ -52,7 +52,7 @@ extension TopStoriesCell: UICollectionViewDelegate, UICollectionViewDataSource {
         let content = self.dataSource[indexPath.row] as TopicTopModel
         let imageView = cell.contentView.viewWithTag(102) as! UIImageView
         let titleLabel = cell.contentView.viewWithTag(103) as! UILabel
-        imageView.kf.setImage(with: URL(string: content.image!))
+        imageView.kf.setImage(with: URL(string: content.imageURL!))
         titleLabel.text = content.title
         
         return cell

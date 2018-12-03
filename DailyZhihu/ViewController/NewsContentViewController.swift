@@ -172,9 +172,3 @@ class NewsContentViewController: UIViewController, UIScrollViewDelegate {
     }
     
 }
-
-extension NewsContentViewController: UIGestureRecognizerDelegate {
-    func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
-        return false
-    }
-}
